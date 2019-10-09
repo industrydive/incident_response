@@ -1,0 +1,29 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "Incident Response Tools",
+  "main": "incidentSlackBot.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/industrydive/incident_response.git"
+  },
+  "author": "Industry Dive",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/industrydive/incident_response/issues"
+  },
+  "homepage": "https://github.com/industrydive/incident_response#readme",
+  "dependencies": {
+    "querystring": "^0.2.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}
