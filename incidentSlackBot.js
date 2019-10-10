@@ -1,6 +1,7 @@
 const rp = require('request-promise-native');
 const qs = require('querystring');
 
+const jiraDoc = 'https://dive.pub/325BCBR';
 const apiUrl = 'https://www.slack.com/api';
 
 /* * * * * * * * * * * * * * * * * */
@@ -164,13 +165,13 @@ function inviteCommsToChannel(channelID, comms) {
  * Set the topic for the new incident channel to be the jira instructions for an incident
  * @param {String} channelID - id for the channel which we would like to modify
  */
-function setChannelTopic(channelID) {
+function setChannelTopic(channelID, commander, comms) {
   // Set the topic for the channel
   const responseURL = `${apiUrl}/channels.setTopic`;
   const channelTopicBody = {
     token: process.env.USER_SLACK_TOKEN,
     channel: channelID,
-    topic: 'https://industrydive.atlassian.net/wiki/spaces/TECH/pages/788529291/Incident+Management+at+Industry+Dive?search_id=29f5a871-a3ff-42aa-a9ca-12e683cd7ce6',
+    topic: `Commander: <@${commander}> Comms: <@${comms}> Jira Doc: ${jiraDoc}`,
   };
   return sendMessageToSlack(responseURL, channelTopicBody).then((topicBody) => {
     const topicResponseBody = JSON.parse(topicBody);
@@ -254,7 +255,7 @@ function createIncidentChannel() {
 
   const channelCreationBody = {
     token: process.env.USER_SLACK_TOKEN,
-    name: `Incident-${incidentDate}-${incidentIdentifier}`,
+    name: `Incident-${incidentDate}__${incidentIdentifier}`,
     validate: false,
   };
   return sendMessageToSlack(responseURL, channelCreationBody);
@@ -348,7 +349,7 @@ exports.handleIncidentForm = (req, res) => {
       const channelInfo = JSON.parse(body).channel;
       channelID = channelInfo.id;
       channelName = channelInfo.name;
-      const setTopicPromise = setChannelTopic(channelID);
+      const setTopicPromise = setChannelTopic(channelID, submission.commander, submission.comms);
       const inviteUsersPromise = inviteProductToChannel(channelID);
       const promiseList = [setTopicPromise, inviteUsersPromise];
       // Only want to invite commander and send message notification if the commander
