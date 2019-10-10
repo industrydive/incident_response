@@ -3,6 +3,10 @@ const qs = require('querystring');
 
 const apiUrl = 'https://www.slack.com/api';
 
+/* * * * * * * * * * * * * * * * * */
+/*         HELPER FUNCTIONS        */
+/* * * * * * * * * * * * * * * * * */
+
 /**
  * Verify that the webhook request came from Slack.
  *
@@ -256,6 +260,11 @@ function createIncidentChannel() {
   return sendMessageToSlack(responseURL, channelCreationBody);
 }
 
+
+/* * * * * * * * * * * * * * * * * */
+/*        CLOUD FUNCTIONS          */
+/* * * * * * * * * * * * * * * * * */
+
 /**
  * Handle the incoming slash command. In this case the command is '/incident'.
  *
@@ -360,6 +369,10 @@ exports.handleIncidentForm = (req, res) => {
       console.log(args);
       console.log('Channel Creation Phase Completed');
       return sendIncidentDetailsMessage(payload, channelName, channelID);
+    })
+    .then((args) => {
+      console.log(args);
+      console.log('Incident Channel is set up and ready for use');
     })
     .catch((err) => {
       const error = JSON.parser(err);
