@@ -54,24 +54,18 @@ function getCurrentDate() {
 }
 
 /**
- * Invite Product, Incident Commander, and Incident Communications to the channel
+ * Invite Product to the channel
  * @param {String} commander - incident commanders user ID
  * @param {String} comms - incident communications user ID
  * @param {String} channel - channel ID for the channel we want to add the users to
  */
-function inviteUsersToChannel(creatorID, commanderID, commsID, channelID) {
-  // Add all users to the channel
+function inviteProductToChannel(channelID) {
+  // Add all product members to the channel
   const responseURL = `${apiUrl}/channels.invite`;
   const addToChannel = [];
   addToChannel.push(process.env.ELI_USER_ID);
   addToChannel.push(process.env.TONY_USER_ID);
   addToChannel.push(process.env.CHRIS_USER_ID);
-  addToChannel.push(commsID);
-  // Whoever creates the incident is automatically added to the channel. If you attempt
-  // to invite yourself an error is thrown.
-  if (creatorID !== commanderID) {
-    addToChannel.push(commanderID);
-  }
 
   const inviteUserPayload = {
     token: process.env.USER_SLACK_TOKEN,
@@ -82,10 +76,84 @@ function inviteUsersToChannel(creatorID, commanderID, commsID, channelID) {
 
   addToChannel.forEach((user) => {
     inviteUserPayload.user = user;
-    console.log(inviteUserPayload);
     promiseList.push(sendMessageToSlack(responseURL, inviteUserPayload));
   });
-  return Promise.all(promiseList);
+  return Promise.all(promiseList).then((data) => {
+    data.forEach(() => {
+      console.log('Product member added to channel');
+    });
+    return 'function adding product members has completed.';
+  });
+}
+
+/**
+ * Invite the commander to the channel and notify them in a private message
+ * @param {string} channelID - channel to add the commander to
+ * @param {string} commander - user id for the user that was designated as commander
+ */
+function inviteCommanderToChannel(channelID, commander) {
+  let responseURL = `${apiUrl}/channels.invite`;
+  const inviteCommanderPayload = {
+    token: process.env.USER_SLACK_TOKEN,
+    channel: channelID,
+    user: commander,
+  };
+  return sendMessageToSlack(responseURL, inviteCommanderPayload).then((invitationBody) => {
+    const invitationResponseBody = JSON.parse(invitationBody);
+    responseURL = `${apiUrl}/chat.postMessage`;
+    // if commander is successfully invited to the channel then we send notification message
+    if (invitationResponseBody.ok) {
+      const notificationMessage = {
+        token: process.env.INCIDENT_BOT_TOKEN,
+        channel: commander,
+        text: `You have been declared the incident commander for <#${invitationResponseBody.channel.id}>. I've already invited you to the channel, but you should get involved ASAP.`,
+      };
+      return sendMessageToSlack(responseURL, notificationMessage).then((chatBody) => {
+        const chatResponseBody = JSON.parse(chatBody);
+        // if notification message succeeds
+        if (chatResponseBody.ok) {
+          return `incident commander: ${chatResponseBody.message.username} was successfully added and notification message was delivered.`;
+        }
+        return `incident commander was added to channel but notification message could not be delivered. Reason: ${chatResponseBody.error}`;
+      });
+    }
+    return `failed to invite incident commander to channel. Reason: ${invitationResponseBody.error}`;
+  });
+}
+
+/**
+ * Invite the communications to the channel and notify them in a private message
+ * @param {string} channelID - channel to add the comms to
+ * @param {string} comms - user id that was designated as incident comms
+ */
+function inviteCommsToChannel(channelID, comms) {
+  let responseURL = `${apiUrl}/channels.invite`;
+  const inviteCommanderPayload = {
+    token: process.env.USER_SLACK_TOKEN,
+    channel: channelID,
+    user: comms,
+  };
+  return sendMessageToSlack(responseURL, inviteCommanderPayload).then((invitationBody) => {
+    const invitationResponseBody = JSON.parse(invitationBody);
+    responseURL = `${apiUrl}/chat.postMessage`;
+    // if comms is successfully invited to the channel then we send notification message
+    if (invitationResponseBody.ok) {
+      const notificationMessage = {
+        token: process.env.INCIDENT_BOT_TOKEN,
+        channel: comms,
+        text: `You have been declared the incident communications for <#${invitationResponseBody.channel.id}>. I've already invited you to the channel, but you should get involved ASAP.`,
+      };
+      return sendMessageToSlack(responseURL, notificationMessage).then((chatBody) => {
+        const chatResponseBody = JSON.parse(chatBody);
+        // if notification message succeeds
+        if (chatResponseBody.ok) {
+          return `incident communications: ${chatResponseBody.message.username} was successfully added and notification message was delivered.`;
+        }
+        return `incident communications was added to channel but notification message could not be delivered. Reason: ${chatResponseBody.error}`;
+      });
+    }
+    return `failed to invite incident communications to channel. Reason: ${invitationResponseBody.error}`;
+  });
 }
 
 /**
@@ -100,7 +168,75 @@ function setChannelTopic(channelID) {
     channel: channelID,
     topic: 'https://industrydive.atlassian.net/wiki/spaces/TECH/pages/788529291/Incident+Management+at+Industry+Dive?search_id=29f5a871-a3ff-42aa-a9ca-12e683cd7ce6',
   };
-  return sendMessageToSlack(responseURL, channelTopicBody);
+  return sendMessageToSlack(responseURL, channelTopicBody).then((topicBody) => {
+    const topicResponseBody = JSON.parse(topicBody);
+    if (topicResponseBody.ok) {
+      return `The channel topic was set to ${topicResponseBody.topic}`;
+    }
+    return `Setting the channel topic failed. Reason: ${topicResponseBody.error}`;
+  });
+}
+
+/**
+ * Send the incident details message to the newly created channel
+ * @param {*} payload - info from the form submission
+ */
+function sendIncidentDetailsMessage(payload, channelName, channelID) {
+  const responseURL = `${apiUrl}/chat.postMessage`;
+  const incidentDetailMessage = {
+    token: process.env.INCIDENT_BOT_TOKEN,
+    channel: channelID,
+    blocks: JSON.stringify([
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          // tslint:disable-next-line:max-line-length
+          text: `*[${channelName}] An Incident has been opened by <@${payload.user.id}>*`,
+        },
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*Commander*\n<@${payload.submission.commander}>\n`,
+          },
+          {
+            type: 'mrkdwn',
+            text: `*Communications*\n<@${payload.submission.comms}>\n`,
+          },
+          {
+            type: 'mrkdwn',
+            text: `*Channel*\n<#${channelID}>\n`,
+          },
+          {
+            type: 'mrkdwn',
+            text: `*Title*\n${payload.submission.title}\n`,
+          },
+          {
+            type: 'mrkdwn',
+            // tslint:disable-next-line:max-line-length
+            text: `*Incident started*\n<!date^${Math.round(Date.now() / 1000)}^{date_short} at {time_secs}|${Math.round(Date.now() / 1000)}>`,
+          },
+        ],
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*Description*\n${payload.submission.description}`,
+        },
+      },
+    ]),
+  };
+  return sendMessageToSlack(responseURL, incidentDetailMessage).then((chatBody) => {
+    const chatResponseBody = JSON.parse(chatBody);
+    if (chatResponseBody.ok) {
+      return 'incident details message sent successfully to the incident channel';
+    }
+    return `incident details message failed to send. Reason: ${chatResponseBody.error}`;
+  });
 }
 
 /**
@@ -108,12 +244,13 @@ function setChannelTopic(channelID) {
  */
 function createIncidentChannel() {
   const responseURL = `${apiUrl}/channels.create`;
-  const incidentNumber = getCurrentDate();
-  console.log(incidentNumber);
+  const incidentDate = getCurrentDate();
+  // need this in case multiple incidents are declared in a day.
+  const incidentIdentifier = Math.floor(1000 + Math.random() * 9000);
 
   const channelCreationBody = {
     token: process.env.USER_SLACK_TOKEN,
-    name: 'incident-testing-1000',
+    name: `Incident-${incidentDate}-${incidentIdentifier}`,
     validate: false,
   };
   return sendMessageToSlack(responseURL, channelCreationBody);
@@ -171,12 +308,12 @@ exports.incidentSlashCommand = (req, res) => {
   };
   // Create a dialog with the user that executed the slash command
   sendMessageToSlack(responseURL, dialog)
-    .then((response) => {
-      const body = JSON.parse(response);
-      if (body.error) {
-        console.error(body.error);
+    .then((body) => {
+      const responseBody = JSON.parse(body);
+      if (responseBody.error) {
+        console.error(responseBody.error);
       } else {
-        console.log(body);
+        console.log(responseBody);
       }
     });
 };
@@ -192,20 +329,37 @@ exports.handleIncidentForm = (req, res) => {
   res.status(200).send(); // best practice to respond with empty 200 status code
   const payload = JSON.parse(req.body.payload);
   const { user, submission } = payload;
-  console.log(payload);
+  let channelName = '';
+  let channelID = '';
   verifyWebhook(payload); // Make sure that the request is coming from Slack
 
   // If the channel gets created successfully then we proceed
   createIncidentChannel()
     .then((body) => {
-      const channelID = JSON.parse(body).channel.id;
+      const channelInfo = JSON.parse(body).channel;
+      channelID = channelInfo.id;
+      channelName = channelInfo.name;
       const setTopicPromise = setChannelTopic(channelID);
-      const inviteUsersPromise = inviteUsersToChannel(user.id, submission.commander, submission.comms, channelID);
-      return Promise.all([setTopicPromise, inviteUsersPromise]);
+      const inviteUsersPromise = inviteProductToChannel(channelID);
+      const promiseList = [setTopicPromise, inviteUsersPromise];
+      // Only want to invite commander and send message notification if the commander
+      // is not the one who declared the incident
+      if (submission.commander !== user.id) {
+        const commanderPromise = inviteCommanderToChannel(channelID, submission.commander);
+        promiseList.push(commanderPromise);
+      }
+      // Only want to invite and send the message notification to comms if comms
+      // was assigned during incident creation
+      if (submission.comms) {
+        const commsPromise = inviteCommsToChannel(channelID, submission.comms);
+        promiseList.push(commsPromise);
+      }
+      return Promise.all(promiseList);
     })
     .then((args) => {
-      console.log('setTopic and inviteUsers promises returned');
       console.log(args);
+      console.log('Channel Creation Phase Completed');
+      return sendIncidentDetailsMessage(payload, channelName, channelID);
     })
     .catch((err) => {
       const error = JSON.parser(err);
