@@ -188,6 +188,7 @@ function setChannelTopic(channelID, commander, comms) {
  */
 function sendIncidentDetailsMessage(payload, channelName, channelID) {
   const responseURL = `${apiUrl}/chat.postMessage`;
+  const text = ':rotating_light: An Incident has been declared!';
   const blocks = [
     {
       type: 'section',
@@ -259,6 +260,7 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
     token: process.env.INCIDENT_BOT_TOKEN,
     channel: channelID,
     blocks: JSON.stringify(blocks),
+    text,
   };
 
   return sendMessageToSlack(responseURL, incidentDetailMessage).then((chatBody) => {
