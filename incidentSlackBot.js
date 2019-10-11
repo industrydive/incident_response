@@ -188,53 +188,79 @@ function setChannelTopic(channelID, commander, comms) {
  */
 function sendIncidentDetailsMessage(payload, channelName, channelID) {
   const responseURL = `${apiUrl}/chat.postMessage`;
+  const blocks = [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        // tslint:disable-next-line:max-line-length
+        text: `*[${channelName}] An Incident has been opened by <@${payload.user.id}>*`,
+      },
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: ':bangbang: *Remember to Update the StatusPage* :bangbang:',
+      },
+    },
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: `*Commander*\n<@${payload.submission.commander}>\n`,
+        },
+        {
+          type: 'mrkdwn',
+          text: `*Communications*\n<@${payload.submission.comms}>\n`,
+        },
+      ],
+    },
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: `*Channel*\n<#${channelID}>\n`,
+        },
+        {
+          type: 'mrkdwn',
+          text: `*Title*\n${payload.submission.title}\n`,
+        },
+      ],
+    },
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          // tslint:disable-next-line:max-line-length
+          text: `*Incident started*\n<!date^${Math.round(Date.now() / 1000)}^{date_short} at {time_secs}|${Math.round(Date.now() / 1000)}>`,
+        },
+      ],
+    },
+  ];
+
+  // only want to add description section if description was filled out on form
+  if (payload.submission.description) {
+    const description = {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*Description*\n${payload.submission.description}`,
+      },
+    };
+    blocks.push(description);
+  }
+
+  // format incident message
   const incidentDetailMessage = {
     token: process.env.INCIDENT_BOT_TOKEN,
     channel: channelID,
-    blocks: JSON.stringify([
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          // tslint:disable-next-line:max-line-length
-          text: `*[${channelName}] An Incident has been opened by <@${payload.user.id}>*`,
-        },
-      },
-      {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*Commander*\n<@${payload.submission.commander}>\n`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*Communications*\n<@${payload.submission.comms}>\n`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*Channel*\n<#${channelID}>\n`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*Title*\n${payload.submission.title}\n`,
-          },
-          {
-            type: 'mrkdwn',
-            // tslint:disable-next-line:max-line-length
-            text: `*Incident started*\n<!date^${Math.round(Date.now() / 1000)}^{date_short} at {time_secs}|${Math.round(Date.now() / 1000)}>`,
-          },
-        ],
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `*Description*\n${payload.submission.description}`,
-        },
-      },
-    ]),
+    blocks: JSON.stringify(blocks),
   };
+
   return sendMessageToSlack(responseURL, incidentDetailMessage).then((chatBody) => {
     const chatResponseBody = JSON.parse(chatBody);
     if (chatResponseBody.ok) {
@@ -359,8 +385,8 @@ exports.handleIncidentForm = (req, res) => {
         promiseList.push(commanderPromise);
       }
       // Only want to invite and send the message notification to comms if comms
-      // was assigned during incident creation
-      if (submission.comms) {
+      // was assigned during incident creation and is not the one who declared the incident.
+      if (submission.comms && submission.comms !== user.id) {
         const commsPromise = inviteCommsToChannel(channelID, submission.comms);
         promiseList.push(commsPromise);
       }
