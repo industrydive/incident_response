@@ -168,10 +168,15 @@ function inviteCommsToChannel(channelID, comms) {
 function setChannelTopic(channelID, commander, comms) {
   // Set the topic for the channel
   const responseURL = `${apiUrl}/channels.setTopic`;
+  let topic = `Commander: <@${commander}>`;
+  if (comms) {
+    topic += ` Comms: <@${comms}>`;
+  }
+  topic += ` Jira Doc: ${jiraDoc}`;
   const channelTopicBody = {
     token: process.env.USER_SLACK_TOKEN,
     channel: channelID,
-    topic: `Commander: <@${commander}> Comms: <@${comms}> Jira Doc: ${jiraDoc}`,
+    topic,
   };
   return sendMessageToSlack(responseURL, channelTopicBody).then((topicBody) => {
     const topicResponseBody = JSON.parse(topicBody);
@@ -189,6 +194,10 @@ function setChannelTopic(channelID, commander, comms) {
 function sendIncidentDetailsMessage(payload, channelName, channelID) {
   const responseURL = `${apiUrl}/chat.postMessage`;
   const text = ':rotating_light: An Incident has been declared!';
+  let comms = 'unassigned';
+  if (payload.submission.comms) {
+    comms = `<@${payload.submission.comms}>`;
+  }
   const blocks = [
     {
       type: 'section',
@@ -214,7 +223,7 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
         },
         {
           type: 'mrkdwn',
-          text: `*Communications*\n<@${payload.submission.comms}>\n`,
+          text: `*Communications*\n${comms}\n`,
         },
       ],
     },
