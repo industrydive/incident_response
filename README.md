@@ -1,7 +1,7 @@
 # incident_response
 
 ## Background
-Our incident slackbot currently lives in two seperate google cloud functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the slackbot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the slack channel with all relevant parties, notifies the commander and comms, and sends a brief description message.
+We wanted to create a slackbot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our slackbot currently lives in two seperate google cloud functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the slackbot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the slack channel with all relevant parties, notifies the commander and comms, and sends a brief description message.
 
 ## Getting Started
 
@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+* You will need to install the Google Cloud Platform CLI for deployment (link to the installation for the CLI)
 
 ```
 Give examples
@@ -32,6 +32,14 @@ until finished
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
+
+# I Left this here for now so I can look at it while I write, but the real installation section is beneath this title
+
+To setup and use this slackbot there are two steps:
+
+1. You must have (or create) a Google Cloud project that will be home to these cloud functions
+2. You must clone this repo and deploy these cloud functions to the project mentioned in step one (needs links to the google cloud functions docs)
+3. You must create a slackbot in the desired workspace and connect the appropriate endpoints/ give the proper permissions (this is going to be a much bigger section when it is done)
 
 ## Deployment
 
