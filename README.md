@@ -9,37 +9,44 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-* You will need to install the Google Cloud Platform CLI for deployment (link to the installation for the CLI)
+* You will need to install the Google Cloud Platform SDK for development. Follow these [instructions](https://cloud.google.com/sdk/install) if you do not already have it installed.
+
+* You will need to have node installed. You can check with:
 
 ```
-Give examples
+node -v
 ```
+
+Follow these [instructions](https://nodejs.org/en/download/) if you do not already have node installed
+
+* Make sure thate you have npm installed (it should be installed with node). You can check with:
+
+```
+npm -v
+```
+
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-# I Left this here for now so I can look at it while I write, but the real installation section is beneath this title
-
-To setup and use this slackbot there are two steps:
+Below is a step by step series of examples that tell you how to get a development env running
 
 1. You must have (or create) a Google Cloud project that will be home to these cloud functions
-2. You must clone this repo and deploy these cloud functions to the project mentioned in step one (needs links to the google cloud functions docs)
-3. You must create a slackbot in the desired workspace and connect the appropriate endpoints/ give the proper permissions (this is going to be a much bigger section when it is done)
+  * You can follow the instructions [here]() to set up a google cloud project if you do not already have one.
+  * In the Google Cloud Console navigate to APIs & Services -> Dashboard and enable the Cloud Functions API if you havent already
+  
+2. You must clone this repo.
+
+3. Install dependencies
+
+```
+npm install
+```
+
+3. You must deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below.
+
+4. You must set and deploy your environment variables. See the `Deploying evnironment variables` section below
+
+5. You connect the appropriate endpoints/ give the proper permissions (this is going to be a much bigger section when it is done) to your slackbot.
 
 ## Deployment
 
@@ -65,9 +72,7 @@ Check to see that the environment variable is present.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Google Cloud Functions](https://cloud.google.com/functions/docs/) 
 
 ## Contributing
 
@@ -79,7 +84,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Willie Brown** - *Initial work* - [Wbrown22](https://github.com/wbrown22)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
