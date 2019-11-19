@@ -11,19 +11,22 @@ These instructions will get you a copy of the project up and running on your loc
 
 * You will need to install the Google Cloud Platform SDK for development. Follow these [instructions](https://cloud.google.com/sdk/install) if you do not already have it installed.
 
+
 * You will need to have node installed. You can check with:
 
-```
-node -v
-```
+   ```
+   node -v
+   ```
 
-Follow these [instructions](https://nodejs.org/en/download/) if you do not already have node installed
+  Follow these [instructions](https://nodejs.org/en/download/) if you do not already have node installed
+
 
 * Make sure thate you have npm installed (it should be installed with node). You can check with:
 
-```
-npm -v
-```
+   ```
+   npm -v
+   ```
+
 
 
 ### Installing
@@ -38,15 +41,38 @@ Below is a step by step series of examples that tell you how to get a developmen
 
 3. Install dependencies
 
-```
-npm install
-```
+   ```
+   npm install
+   ```
 
-3. You must deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below.
+3. You must deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
 
-4. You must set and deploy your environment variables. See the `Deploying evnironment variables` section below
+4. Create your Slack app
+* Navigate to https://api.slack.com/apps and hit the create new app button
+* In your new app, navigate to `Slash Commands` and create a new slash command. You may call this whatever you like, and input the HTTP trigger endpoint for the `incidentSlashCommand` function in the Request URL section.
+* In your new app, navigate to and enable `Interactive Components`. In the Request URL section here you must enter the HTTP trigger endpoint for the `handleIncidentForm` function.
+* In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
+* Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
+* Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button. 
 
-5. You connect the appropriate endpoints/ give the proper permissions (this is going to be a much bigger section when it is done) to your slackbot.
+5. You must set and deploy your environment variables. First you have to create a file called `.env.yml` in the top level of your project. It should look like this
+
+    ```
+    SLACK_TOKEN: This can be found under Basic Information -> App Credentials -> Verification Token in your app
+    INCIDENT_BOT_TOKEN: This can be found under OAuth & Permissions -> Bot User OAuth Access Token and begins with 'xobp'
+    USER_SLACK_TOKEN: This can be found under OAuth & Permissions -> OAuth Access Token and begins with 'xoxp'
+    FIRST_USER_ID: User ID of first person that will be added to incident channel
+    SECOND_USER_ID: User ID of second person that will be added to incident channel
+    THIRD_USER_ID: User ID of third person that will be added to incident channel
+    ```
+    
+    NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product 
+    team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
+    easily find the user IDs for the members of your team that you would like to include.
+
+For instructions on how to deploy these environment variables, see the `Deploying evnironment variables` section below.
+
+
 
 ## Deployment
 
@@ -68,19 +94,23 @@ If you would like to deploy just a single environment variable, you can also suc
 
 `gcloud functions deploy FUNCTION_NAME --set-env-vars FOO=bar`
 
-Check to see that the environment variable is present.
+Check to see that the environment variable is present. You can do this by viewing your function in the Google Cloud Console.
+
 
 ## Built With
 
-* [Google Cloud Functions](https://cloud.google.com/functions/docs/) 
+* [Google Cloud Functions](https://cloud.google.com/functions/docs/) - Built and run completely in Cloud Functions
+
 
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
 
 ## Authors
 
@@ -88,9 +118,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
 
 ## Acknowledgments
 
