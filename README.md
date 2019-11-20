@@ -1,11 +1,11 @@
 # incident_response
 
 ## Background
-We wanted to create a slackbot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our slackbot currently lives in two seperate google cloud functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the slackbot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the slack channel with all relevant parties, notifies the commander and comms, and sends a brief description message.
+We wanted to create a slackbot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our slackbot currently lives in two seperate google cloud functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the slackbot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the slack channel with all relevant parties, sends a brief description message in the new incident channel, and sends private notifications to both the incident commander and incident communications.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on a live system.
 
 ### Prerequisites
 
@@ -48,12 +48,12 @@ Below is a step by step series of examples that tell you how to get a developmen
 3. You must deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
 
 4. Create your Slack app
-* Navigate to https://api.slack.com/apps and hit the create new app button
-* In your new app, navigate to `Slash Commands` and create a new slash command. You may call this whatever you like, and input the HTTP trigger endpoint for the `incidentSlashCommand` function in the Request URL section.
-* In your new app, navigate to and enable `Interactive Components`. In the Request URL section here you must enter the HTTP trigger endpoint for the `handleIncidentForm` function.
-* In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
-* Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
-* Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button. 
+   * Navigate to https://api.slack.com/apps and hit the create new app button
+   * In your new app, navigate to `Slash Commands` and create a new slash command. You may call this whatever you like, and input the HTTP trigger endpoint for the `incidentSlashCommand` function in the Request URL section.
+   * In your new app, navigate to and enable `Interactive Components`. In the Request URL section here you must enter the HTTP trigger endpoint for the `handleIncidentForm` function.
+   * In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
+   * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
+   * Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button. 
 
 5. You must set and deploy your environment variables. First you have to create a file called `.env.yml` in the top level of your project. It should look like this
 
@@ -126,6 +126,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Our initial inspiration and model for this slackbot can be found [here](https://github.com/slackapi/template-incident-management)
