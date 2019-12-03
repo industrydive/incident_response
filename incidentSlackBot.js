@@ -1,7 +1,6 @@
 const rp = require('request-promise-native');
 const qs = require('querystring');
 
-const JIRA_DOC = 'https://dive.pub/325BCBR';
 const API_URL = 'https://www.slack.com/api';
 
 /* * * * * * * * * * * * * * * * * */
@@ -12,7 +11,6 @@ const API_URL = 'https://www.slack.com/api';
  * Verify that the webhook request came from Slack.
  *
  * @param {object} body The body of the request.
- * @param {string} body.token The Slack token to be verified.
  */
 function verifyWebhook(body) {
   if (!body || body.token !== process.env.SLACK_TOKEN) {
@@ -26,7 +24,7 @@ function verifyWebhook(body) {
  * Send a response to slack.
  *
  * @param {string} responseURL The url to send response to.
- * @param {object} JSONmessage The payload that we are sending to the url.
+ * @param {object} message The payload that we are sending to the url.
  */
 function sendMessageToSlack(responseURL, message) {
   const postOptions = {
@@ -59,17 +57,16 @@ function getCurrentDate() {
 
 /**
  * Invite Product to the channel
- * @param {String} commander - incident commanders user ID
- * @param {String} comms - incident communications user ID
- * @param {String} channel - channel ID for the channel we want to add the users to
+ *
+ * @param {String} channelID - channel ID for the channel we want to add the users to
  */
 function inviteProductToChannel(channelID) {
   // Add all product members to the channel
   const responseURL = `${API_URL}/channels.invite`;
   const addToChannel = [];
-  addToChannel.push(process.env.ELI_USER_ID);
-  addToChannel.push(process.env.TONY_USER_ID);
-  addToChannel.push(process.env.CHRIS_USER_ID);
+  addToChannel.push(process.env.USER_ID_1);
+  addToChannel.push(process.env.USER_ID_2);
+  addToChannel.push(process.env.USER_ID_3);
 
   const inviteUserPayload = {
     token: process.env.USER_SLACK_TOKEN,
@@ -92,6 +89,7 @@ function inviteProductToChannel(channelID) {
 
 /**
  * Invite the commander to the channel and notify them in a private message
+ *
  * @param {string} channelID - channel to add the commander to
  * @param {string} commander - user id for the user that was designated as commander
  */
@@ -127,6 +125,7 @@ function inviteCommanderToChannel(channelID, commander) {
 
 /**
  * Invite the communications to the channel and notify them in a private message
+ *
  * @param {string} channelID - channel to add the comms to
  * @param {string} comms - user id that was designated as incident comms
  */
@@ -162,7 +161,10 @@ function inviteCommsToChannel(channelID, comms) {
 
 /**
  * Set the topic for the new incident channel to be the jira instructions for an incident
- * @param {String} channelID - id for the channel which we would like to modify
+ *
+ * @param {string} channelID - id for the channel which we would like to modify
+ * @param {string} commander - user id that was designated as incident commander
+ * @param {string} comms - user id that was designated as incident communications
  */
 function setChannelTopic(channelID, commander, comms) {
   // Set the topic for the channel
@@ -171,7 +173,7 @@ function setChannelTopic(channelID, commander, comms) {
   if (comms) {
     topic += ` Comms: <@${comms}>`;
   }
-  topic += ` Jira Doc: ${JIRA_DOC}`;
+  topic += ` Jira Doc: ${process.env.JIRA_DOC}`;
   const channelTopicBody = {
     token: process.env.USER_SLACK_TOKEN,
     channel: channelID,
@@ -188,7 +190,10 @@ function setChannelTopic(channelID, commander, comms) {
 
 /**
  * Send the incident details message to the newly created channel
+ *
  * @param {*} payload - info from the form submission
+ * @param {string} channelName - name of the incident channel that has been created
+ * @param {string} channelID - id of the incident channel that has been created
  */
 function sendIncidentDetailsMessage(payload, channelName, channelID) {
   const responseURL = `${API_URL}/chat.postMessage`;
@@ -286,7 +291,7 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
 function createIncidentChannel() {
   const responseURL = `${API_URL}/channels.create`;
   const incidentDate = getCurrentDate();
-  // need this in case multiple incidents are declared in a day.
+  // need this random 4 digit string in case multiple incidents are declared in a day.
   const incidentIdentifier = Math.floor(1000 + Math.random() * 9000);
 
   const channelCreationBody = {
@@ -368,7 +373,6 @@ exports.incidentSlashCommand = (req, res) => {
  *
  * @param {object} req the request object.
  * @param {object} res the response object.
- * @param {string} req.body.token the slack token that we will use the validate request
  */
 exports.handleIncidentForm = (req, res) => {
   res.status(200).send(); // best practice to respond with empty 200 status code
