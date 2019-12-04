@@ -3,6 +3,15 @@
 ## Background
 We wanted to create a slackbot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our slackbot currently lives in two seperate google cloud functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the slackbot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the slack channel with all relevant parties, sends a brief description message in the new incident channel, and sends private notifications to both the incident commander and incident communications.
 
+#### Basic App Flow
+1. Executing the Slash Command provides the incident form as seen below
+
+![Slash Command](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png)
+
+![Incident Form](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png)
+
+2. Submitting the Incident does the following
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on a live system.
