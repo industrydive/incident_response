@@ -6,9 +6,9 @@ We wanted to create a slackbot that could easily facilitate incident response he
 #### Basic App Flow
 1. Executing the Slash Command provides the incident form as seen below
 
-![Slash Command](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png){:height="50%" width="50%"}
+![Slash Command](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png?s=200)
 
-![Incident Form](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png){:height="50%" width="50%"}
+![Incident Form](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png?s=200)
 
 2. Submitting the Incident does the following
 
