@@ -35,13 +35,13 @@ Below is a step by step series of examples that tell you how to get a developmen
 2. You must clone this repo.
 
 3. Create your Slack app:
-   * Navigate to https://api.slack.com/apps and create your new slack app.
+   * Navigate to https://api.slack.com/apps and create your new Slack app.
    * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `incidentSlashCommand` function once you have completed step 4.
    * In your new app, navigate to and enable `Interactive Components`. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `handleIncidentForm` function once you have completed step 4.
    * In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
    * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
 
-4. You must set your environment variables and deploy your cloud functions. 
+4. You must set your environment variables and deploy your Cloud Functions. 
     * Rename `example.env.yaml` to `.env.yaml` and input your environment variables.
 
       NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product
@@ -50,18 +50,18 @@ Below is a step by step series of examples that tell you how to get a developmen
 
     * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](#deploying-the-cloud-functions)
 
-      NOTE: You may want to save the HTTP trigger endpoint that is part of the output from the deployment command for use in step 5, although you can find this information for each cloud function in the google cloud console later.
+      NOTE: You may want to save the HTTP trigger endpoint that is part of the output from the deployment command for use in step 5, although you can find this information for each cloud function in the Google Cloud Console later.
 
-5. Now that you have deployed your cloud functions, go back and replace the placeholder URLs with the correct cloud function HTTP trigger endpoints. If you can't remember where these were/which endpoint belongs where, then reference step 3.
+5. Now that you have deployed your Cloud Functions, go back and replace the placeholder URLs with the correct Cloud Function HTTP trigger endpoints. If you can't remember where these were/which endpoint belongs where, then reference step 3.
 
-6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your slack app should now function as seen in the [demo](#basic-app-flow)
+6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your Slack app should now function as seen in the [demo](#basic-app-flow)
 
 
 ## Deployment
 
 ### Deploying the Cloud Functions
 Before deploying, make sure of the following:
-  * All files that you don't want to add to google cloud have been added to .gcloudignore
+  * All files that you don't want to add to Google Cloud have been added to .gcloudignore
   * You have the correct project selected. 
     * You can check the above with this command:
 
