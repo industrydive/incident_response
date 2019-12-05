@@ -1,0 +1,14 @@
+# Environment Variables
+.env.yaml
+
+# Dependency related
+node_modules
+package-lock.json
+.idea
+
+# Linting
+.eslintrc.js
+
+# Licensing/Contributing
+LICENSE
+CONTRIBUTING.md
