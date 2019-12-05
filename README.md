@@ -48,13 +48,13 @@ Below is a step by step series of examples that tell you how to get a developmen
       team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
       easily find the user IDs for the members of your team that you would like to include.
 
-    * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](## Deployment)
+    * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](##Deployment)
 
       NOTE: You may want to save the HTTP trigger endpoint that is part of the output from the deployment command for use in step 5, although you can find this information for each cloud function in the google cloud console later.
 
 5. Now that you have deployed your cloud functions, go back and replace the placeholder URLs with the correct cloud function HTTP trigger endpoints. If you can't remember where these were/which endpoint belongs where, then reference step 3.
 
-6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your slack app should now function as seen in the [demo](#### Basic App Flow)
+6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your slack app should now function as seen in the [demo](####Basic App Flow)
 
 
 ## Deployment
@@ -69,7 +69,7 @@ Before deploying, make sure of the following:
         gcloud config list
         ```
       If you are on the wrong project then you can use the following commands to find and switch projects.
-      
+
         ```
         gcloud projects list (to get the desired project ID)
         ```
