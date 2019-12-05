@@ -36,7 +36,7 @@ Below is a step by step series of examples that tell you how to get a developmen
 
 3. Create your Slack app:
    * Navigate to https://api.slack.com/apps and create your new slack app.
-   * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this the HTTP trigger endpoint for the `incidentSlashCommand` function once you have completed step 4.
+   * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `incidentSlashCommand` function once you have completed step 4.
    * In your new app, navigate to and enable `Interactive Components`. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `handleIncidentForm` function once you have completed step 4.
    * In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
    * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
@@ -52,7 +52,7 @@ Below is a step by step series of examples that tell you how to get a developmen
 
       NOTE: You may want to save the HTTP trigger endpoint that is part of the output from the deployment command for use in step 5, although you can find this information for each cloud function in the google cloud console later.
 
-5. Now that you have deployed your cloud functions, go back and replace the placeholder URLs with the correct cloud function HTTP trigger endpoints. If you can remember where these were/which endpoint belows where, then reference step 3.
+5. Now that you have deployed your cloud functions, go back and replace the placeholder URLs with the correct cloud function HTTP trigger endpoints. If you can't remember where these were/which endpoint belongs where, then reference step 3.
 
 6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your slack app should now function as seen in the [demo](#### Basic App Flow)
 
