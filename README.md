@@ -6,15 +6,15 @@ We wanted to create a slackbot that could easily facilitate incident response he
 #### Basic App Flow
 1. Executing the Slash Command provides the incident form as seen below
 
-<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png" alt="slash command" width="600px" height="200px">
+<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/Incident_Slash_Command.png" alt="slash command" width="600px" height="200px">
 
-<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png" alt="incident form" width="600px" height="600px">
+<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/Incident_Form.png" alt="incident form" width="600px" height="600px">
 
 2. Submitting the Incident results in the following channel being created with your members, communications, and commander. The briefing message is sent in the new channel as seen below.
 
-<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/channel_image.png" alt="channel alert" width="600px" height="200px">
+<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/channel_image.png" alt="channel alert" width="150px" height="75px">
 
-<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/channel_message.png" alt="channel message" width="600px" height="300px">
+<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/channel_message.png" alt="channel message" width="600px" height="300px">
 
 ## Getting Started
 
@@ -58,7 +58,13 @@ Below is a step by step series of examples that tell you how to get a developmen
    npm install
    ```
 
-3. You must deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
+3. Make sure that you are on the correct google cloud project 
+
+  ```
+  gcloud config list
+  ```
+  
+  Then deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
 
 4. Create your Slack app
    * Navigate to https://api.slack.com/apps and hit the create new app button
@@ -68,7 +74,7 @@ Below is a step by step series of examples that tell you how to get a developmen
    * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
    * Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button. 
 
-5. You must set and deploy your environment variables. Rename `example.env.yml` to `.env.yml` and input you environment variables. 
+5. You must set and deploy your environment variables. Rename `example.env.yaml` to `.env.yaml` and input your environment variables. 
     
     NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product 
     team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
@@ -110,7 +116,7 @@ Check to see that the environment variable is present. You can do this by viewin
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/industrydive/incident_response/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 
 ## Versioning
@@ -127,7 +133,7 @@ See also the list of [contributors](https://github.com/industrydive/incident_res
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/industrydive/incident_response/blob/master/LICENSE) file for details
 
 
 ## Acknowledgments
