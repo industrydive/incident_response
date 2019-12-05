@@ -10,7 +10,11 @@ We wanted to create a slackbot that could easily facilitate incident response he
 
 <img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png" alt="incident form" width="600px" height="600px">
 
-2. Submitting the Incident does the following
+2. Submitting the Incident results in the following channel being created with your members, communications, and commander. The briefing message is sent in the new channel as seen below.
+
+<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/channel_image.png" alt="channel alert" width="600px" height="200px">
+
+<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/channel_message.png" alt="channel message" width="600px" height="300px">
 
 ## Getting Started
 
