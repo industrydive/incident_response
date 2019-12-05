@@ -1,7 +1,7 @@
 # incident_response
 
 ## Background
-We wanted to create a Slack bot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our Slack bot currently lives in two seperate Google Cloud Functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the Slack bot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in Slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the Slack channel with all relevant parties, sends a brief description message in the new incident channel, and sends private notifications to both the incident commander and incident communications.
+We wanted to create a Slack bot that could easily facilitate incident response here at Industry Dive. This is our first iteration towards that goal. Our Slack bot currently lives in two separate Google Cloud Functions called `incidentSlashCommand` and `handleIncidentForm`. Making changes to the Slack bot means redeploying the two functions. The `incidentSlashCommand` function verifies the source of the request and presents the user with a form in Slack after they enter the '/incident' command. The `handleIncidentForm` takes the form submission and creates the Slack channel with all relevant parties, sends a brief description message in the new incident channel, and sends private notifications to both the incident commander and incident communications.
 
 #### Basic App Flow
 1. Executing the Slash Command provides the incident form as seen below:
@@ -63,7 +63,7 @@ Below is a step by step series of examples that tell you how to get a developmen
 ## Deployment
 
 ### Deploying the Cloud Functions
-Before deploying your Cloud Functions, make sure that you have created a file called .gcloudignore containing all of the files you would like to keep from getting uploaded to Google Cloud. See [documentation](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore) on how to create this file.
+Before deploying your Cloud Functions, make sure that you have created a file called `.gcloudignore` containing all of the files you would like to keep from getting uploaded to Google Cloud. See [documentation](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore) on how to create this file.
 
 To deploy the Cloud Function you will type the following command from the main directory of the project.
 
@@ -102,7 +102,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Willie Brown** - *Initial work* - [Wbrown22](https://github.com/wbrown22)
+* **Willie Brown** - *Initial work* - [wbrown22](https://github.com/wbrown22)
 
 See also the list of [contributors](https://github.com/industrydive/incident_response/graphs/contributors) who participated in this project.
 
