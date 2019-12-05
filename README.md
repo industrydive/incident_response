@@ -80,7 +80,7 @@ Below is a step by step series of examples that tell you how to get a developmen
     team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
     easily find the user IDs for the members of your team that you would like to include.
 
-For instructions on how to deploy these environment variables, see the `Deploying evnironment variables` section below.
+    For instructions on how to deploy these environment variables, see the `Deploying evnironment variables` section below.
 
 
 
