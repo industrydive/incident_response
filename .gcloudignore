@@ -14,6 +14,10 @@
 .gitignore
 #!include:.gitignore
 
+package-lock.json
+.eslintrc.js
 example.env.yaml 
 demo_images
 README.md
+LICENSE
+CONTRIBUTING.md
