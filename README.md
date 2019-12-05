@@ -47,8 +47,8 @@ These instructions will get you a copy of the project up and running on a live s
 Below is a step by step series of examples that tell you how to get a development env running
 
 1. You must have (or create) a Google Cloud project that will be home to these cloud functions
-  * You can follow the instructions [here]() to set up a google cloud project if you do not already have one.
-  * In the Google Cloud Console navigate to APIs & Services -> Dashboard and enable the Cloud Functions API if you havent already
+    * You can follow the instructions [here]() to set up a google cloud project if you do not already have one.
+    * In the Google Cloud Console navigate to APIs & Services -> Dashboard and enable the Cloud Functions API if you havent already
   
 2. You must clone this repo.
 
