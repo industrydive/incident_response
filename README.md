@@ -6,9 +6,9 @@ We wanted to create a slackbot that could easily facilitate incident response he
 #### Basic App Flow
 1. Executing the Slash Command provides the incident form as seen below
 
-![Slash Command](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png?s=200)
+<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Slash_Command.png" alt="slash command" width="600px" height="200px">
 
-![Incident Form](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png?s=200)
+<img src="https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/demo_images/Incident_Form.png" alt="incident form" width="600px" height="600px">
 
 2. Submitting the Incident does the following
 
@@ -64,16 +64,7 @@ Below is a step by step series of examples that tell you how to get a developmen
    * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
    * Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button. 
 
-5. You must set and deploy your environment variables. First you have to create a file called `.env.yml` in the top level of your project. It should look like this
-
-    ```
-    SLACK_TOKEN: This can be found under Basic Information -> App Credentials -> Verification Token in your app
-    INCIDENT_BOT_TOKEN: This can be found under OAuth & Permissions -> Bot User OAuth Access Token and begins with 'xobp'
-    USER_SLACK_TOKEN: This can be found under OAuth & Permissions -> OAuth Access Token and begins with 'xoxp'
-    FIRST_USER_ID: User ID of first person that will be added to incident channel
-    SECOND_USER_ID: User ID of second person that will be added to incident channel
-    THIRD_USER_ID: User ID of third person that will be added to incident channel
-    ```
+5. You must set and deploy your environment variables. Rename `example.env.yml` to `.env.yml` and input you environment variables. 
     
     NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product 
     team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
@@ -86,6 +77,8 @@ For instructions on how to deploy these environment variables, see the `Deployin
 ## Deployment
 
 ### Deploying the cloud functions
+Before deploying your cloud functions, make sure that you have created a file called .gcloudignore containing all of the files you would like to keep from getting uploaded to google cloud. See [documentation](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore) on how to create this file
+
 To deploy the cloud function you will type the following command from the main directory of the project.
 
 `gcloud functions deploy FUNCTION_NAME --runtime nodejs10 --trigger-http`
@@ -113,19 +106,19 @@ Check to see that the environment variable is present. You can do this by viewin
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/industrydive/incident_response/blob/Update-README-for-open-source/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/industrydive/incident_response/tags). 
 
 
 ## Authors
 
 * **Willie Brown** - *Initial work* - [Wbrown22](https://github.com/wbrown22)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/industrydive/incident_response/graphs/contributors) who participated in this project.
 
 
 ## License
