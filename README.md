@@ -64,10 +64,12 @@ Before deploying, make sure of the following:
   * All files that you don't want to add to google cloud have been added to .gcloudignore
   * You have the correct project selected. 
     * You can check the above with this command:
+
         ```
         gcloud config list
         ```
       If you are on the wrong project then you can use the following commands to find and switch projects.
+      
         ```
         gcloud projects list (to get the desired project ID)
         ```
