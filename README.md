@@ -60,11 +60,11 @@ Below is a step by step series of examples that tell you how to get a developmen
 
 3. Make sure that you are on the correct google cloud project 
 
-  ```
-  gcloud config list
-  ```
-  
-  Then deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
+    ```
+    gcloud config list
+    ```
+    
+    Then deploy each of the cloud functions to your Google Cloud project. See the `Deploying the cloud functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger enpoint. Make sure to save these somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
 
 4. Create your Slack app
    * Navigate to https://api.slack.com/apps and hit the create new app button
