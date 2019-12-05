@@ -1,0 +1,6 @@
+# Environment Variables
+.env.yaml
+
+# Dependency related
+node_modules
+.idea

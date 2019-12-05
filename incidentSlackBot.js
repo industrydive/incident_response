@@ -173,7 +173,7 @@ function setChannelTopic(channelID, commander, comms) {
   if (comms) {
     topic += ` Comms: <@${comms}>`;
   }
-  topic += ` Jira Doc: ${process.env.JIRA_DOC}`;
+  topic += ` Incident Doc: ${process.env.INCIDENT_DOC_URL}`;
   const channelTopicBody = {
     token: process.env.USER_SLACK_TOKEN,
     channel: channelID,

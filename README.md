@@ -12,7 +12,7 @@ We wanted to create a Slack bot that could easily facilitate incident response h
 
 2. Submitting the incident form results in the following channel being created with your members, communications, and commander. The briefing message is sent in the new channel as seen below:
 
-<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/channel_image.png" alt="channel alert" width="150px" height="75px">
+<img src="https://github.com/industrydive/incident_response/blob/master/demo_images/channel_image.png" alt="channel alert" width="250px" height="75px">
 
 <img src="https://github.com/industrydive/incident_response/blob/master/demo_images/channel_message.png" alt="channel message" width="600px" height="300px">
 
@@ -34,56 +34,58 @@ Below is a step by step series of examples that tell you how to get a developmen
 
 2. You must clone this repo.
 
-3. Make sure that you are on the correct Google Cloud project using:
-
-    ```
-    gcloud config list
-    ```
-
-    Then deploy each of the Cloud Functions to your Google Cloud project. See the `Deploying the Cloud Functions` section below. NOTE: When you deploy the function, the success output includes the HTTP trigger endpoint as `httpsTrigger`. Make sure to save this somewhere as you will need them in the next step. You can also find this info in the Google Cloud Console later on if you need.
-
-4. Create your Slack app:
-   * Navigate to https://api.slack.com/apps and hit the create new app button
-   * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like, and input the HTTP trigger endpoint for the `incidentSlashCommand` function in the Request URL section.
-   * In your new app, navigate to and enable `Interactive Components`. In the Request URL section here you must enter the HTTP trigger endpoint for the `handleIncidentForm` function.
+3. Create your Slack app:
+   * Navigate to https://api.slack.com/apps and create your new Slack app.
+   * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `incidentSlashCommand` function once you have completed step 4.
+   * In your new app, navigate to and enable `Interactive Components`. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `handleIncidentForm` function once you have completed step 4.
    * In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
    * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
-   * Now you can navigate to `OAuth & Permissions` and hit the `Install to Workspace` button.
 
-5. You must set and deploy your environment variables. Rename `example.env.yaml` to `.env.yaml` and input your environment variables.
+4. You must set your environment variables and deploy your Cloud Functions. 
+    * Rename `example.env.yaml` to `.env.yaml` and input your environment variables.
 
-    NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product
-    team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
-    easily find the user IDs for the members of your team that you would like to include.
+      NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product
+      team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
+      easily find the user IDs for the members of your team that you would like to include.
 
-    For instructions on how to deploy these environment variables, see the `Deploying environment variables` section below.
+    * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](#deploying-the-cloud-functions)
 
+      NOTE: You may want to save the HTTP trigger endpoint that is part of the output from the deployment command for use in step 5, although you can find this information for each cloud function in the Google Cloud Console later.
+
+5. Now that you have deployed your Cloud Functions, go back and replace the placeholder URLs with the correct Cloud Function HTTP trigger endpoints. If you can't remember where these were/which endpoint belongs where, then reference step 3.
+
+6. In Slack, navigate to OAuth & Permissions and hit the Install to Workspace button. Your Slack app should now function as seen in the [demo](#basic-app-flow)
 
 
 ## Deployment
 
 ### Deploying the Cloud Functions
-Before deploying your Cloud Functions, make sure that you have created a file called `.gcloudignore` containing all of the files you would like to keep from getting uploaded to Google Cloud. See [documentation](https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore) on how to create this file.
+Before deploying, make sure of the following:
+  * All files that you don't want to add to Google Cloud have been added to .gcloudignore
+  * You have the correct project selected. 
+    * You can check the above with this command:
 
-To deploy the Cloud Function you will type the following command from the main directory of the project.
+        ```
+        gcloud config list
+        ```
+      If you are on the wrong project then you can use the following commands to find and switch projects.
 
-`gcloud functions deploy FUNCTION_NAME --runtime nodejs10 --trigger-http`
+        ```
+        gcloud projects list (to get the desired project ID)
+        ```
+        ```
+        gcloud config set project <project-ID>
+        ```
+
+To deploy the Cloud Functions and environment variables you will type and execute the following commands from the main directory of the project.
+
+`gcloud functions deploy incidentSlashCommand --runtime nodejs10 --trigger-http --env-vars-file .env.yaml`
+
+`gcloud functions deploy handleIncidentForm --runtime nodejs10 --trigger-http --env-vars-file .env.yaml`
 
 The deploy should fail if there are any errors.
 
-### Deploying environment variables
-To deploy the environment variables for the Cloud Functions you will run the following command after adding your new environment variables to env file.
-
-`gcloud functions deploy FUNCTION_NAME --env-vars-file .env.yaml`
-
-Go to the Google Cloud Console and find the function that you were working with. Check that the environment variables are present.
-
-If you would like to deploy just a single environment variable, you can also successfully do that with the following command.
-
-`gcloud functions deploy FUNCTION_NAME --set-env-vars FOO=bar`
-
-Check to see that the environment variable is present. You can do this by viewing your function in the Google Cloud Console.
-
+You can check that the functions have the correct source code/environment variables by visiting them in the console. The only files that are required by the functions are incidentSlackBot.js and package.json.
 
 ## Built With
 

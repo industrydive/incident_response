@@ -12,13 +12,12 @@
 # below:
 .git
 .gitignore
-.idea
-.env.yaml
-.eslintrc.js
-node_modules
+#!include:.gitignore
+
 package-lock.json
-README.md
-CONTRIBUTING.md
+.eslintrc.js
 example.env.yaml 
 demo_images
+README.md
 LICENSE
+CONTRIBUTING.md
