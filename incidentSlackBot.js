@@ -71,9 +71,9 @@ function sendDirectMessage(channelID, user, role) {
       const chatResponseBody = response.data;
       // if notification message succeeds
       if (chatResponseBody.ok) {
-        return `Notification message was successfully delivered to ${chatResponseBody.message.username}`;
+        return 'Notification message was successfully delivered.';
       }
-      return `Notification message could not be delivered to ${chatResponseBody.message.username}. Reason: ${chatResponseBody.error}`;
+      return 'Notification message could not be delivered.';
     });
 }
 
@@ -186,15 +186,15 @@ function getIncidentChannelMembers(commander, comms) {
     include_disabled: false,
     include_users: true,
   };
-  let channelMembers = [];
-  sendMessageToSlack(responseURL, requestMembersBody)
+  return sendMessageToSlack(responseURL, requestMembersBody)
     .then((response) => {
+      let channelMembers = [];
       const responseBody = response.data;
       if (responseBody.ok) {
         // eslint-disable-next-line consistent-return
         responseBody.usergroups.forEach((group) => {
           if (group.name === process.env.INCIDENT_GROUP_NAME) {
-            channelMembers = group.user_ids;
+            channelMembers = group.users;
           }
         });
       } else {
@@ -207,14 +207,43 @@ function getIncidentChannelMembers(commander, comms) {
       if (comms && !channelMembers.includes(comms)) {
         channelMembers.push(comms);
       }
-      return channelMembers;
+      // We need to convert this to a string because the Slack API
+      // is stupid and doesn't work with a list.
+      return channelMembers.join();
+    });
+}
+
+/**
+ * Invite the channel members that we want to the incident channel
+ */
+function inviteUsersToChannel(channel, commander, comms) {
+  console.log('inviting users to channel');
+  const responseURL = `${API_URL}/conversations.invite`;
+  return getIncidentChannelMembers(commander, comms)
+    .then((channelMembers) => {
+      console.log(channelMembers);
+      const invitiationBody = {
+        token: process.env.INCIDENT_BOT_TOKEN,
+        channel,
+        users: channelMembers,
+      };
+      console.log(invitiationBody);
+      return sendMessageToSlack(responseURL, invitiationBody);
+    })
+    .then((response) => {
+      const responseBody = response.data;
+      if (responseBody.ok) {
+        return 'Users were successfully invited to the channel';
+      }
+      console.log(responseBody.error);
+      return 'There was an error when inviting the Users to the channel';
     });
 }
 
 /**
  * Create the new slack channel for the incident
  */
-function createIncidentChannel(channelMembers) {
+function createIncidentChannel() {
   const responseURL = `${API_URL}/conversations.create`;
   const incidentDate = getCurrentDate();
   // need this random 4 digit string in case multiple incidents are declared in a day.
@@ -222,9 +251,8 @@ function createIncidentChannel(channelMembers) {
 
   const channelCreationBody = {
     token: process.env.INCIDENT_BOT_TOKEN,
-    name: `Incident-${incidentDate}__${incidentIdentifier}`,
+    name: `incident-${incidentDate}__${incidentIdentifier}`,
     is_private: false,
-    user_ids: channelMembers,
   };
   return sendMessageToSlack(responseURL, channelCreationBody);
 }
@@ -253,9 +281,9 @@ function setChannelTopic(channelID, commander, comms) {
     .then((response) => {
       const topicResponseBody = response.data;
       if (topicResponseBody.ok) {
-        return `The channel topic was set to ${topicResponseBody.topic}`;
+        return 'The channel topic was set successfully';
       }
-      return `Setting the channel topic failed. Reason: ${topicResponseBody.error}`;
+      return 'Setting the channel topic failed.';
     });
 }
 
@@ -317,7 +345,6 @@ exports.incidentSlashCommand = (req, res) => {
   sendMessageToSlack(responseURL, dialog)
     .then((response) => {
       const responseBody = response.data;
-      console.log(responseBody);
       if (responseBody.error) {
         console.error(responseBody.error);
       } else {
@@ -340,31 +367,33 @@ exports.handleIncidentForm = (req, res) => {
   let channelID = '';
   verifyWebhook(payload); // Make sure that the request is coming from Slack
 
-  // get the members that we would like to add to the channel
-  const channelMembers = getIncidentChannelMembers(submission.commander, submission.comms);
-
-  // If the channel gets created successfully then we proceed
-  createIncidentChannel(channelMembers)
+  // attempt to create the new incident channel
+  createIncidentChannel()
+    // If the channel gets created successfully then we proceed
     .then((response) => {
       const body = response.data;
-      const channelInfo = body.channel;
-      channelID = channelInfo.id;
-      channelName = channelInfo.name;
-      const setTopicPromise = setChannelTopic(channelID, submission.commander, submission.comms);
-      const promiseList = [setTopicPromise];
-      // Only want to send message notification if the commander
-      // is not the one who declared the incident
-      if (submission.commander !== user.id) {
-        const commanderPromise = sendDirectMessage(channelID, submission.commander, 'commander');
-        promiseList.push(commanderPromise);
+      if (body.ok) {
+        const channelInfo = body.channel;
+        channelID = channelInfo.id;
+        channelName = channelInfo.name;
+        const setTopicPromise = setChannelTopic(channelID, submission.commander, submission.comms);
+        const inviteUsersPromise = inviteUsersToChannel(channelID, submission.commander, submission.comms);
+        const promiseList = [setTopicPromise, inviteUsersPromise];
+        // Only want to send message notification if the commander
+        // is not the one who declared the incident
+        if (submission.commander !== user.id) {
+          const commanderPromise = sendDirectMessage(channelID, submission.commander, 'commander');
+          promiseList.push(commanderPromise);
+        }
+        // Only want to send the message notification to comms if comms
+        // is not the one who declared the incident.
+        if (submission.comms && submission.comms !== user.id) {
+          const commsPromise = sendDirectMessage(channelID, submission.comms, 'communications');
+          promiseList.push(commsPromise);
+        }
+        return Promise.all(promiseList);
       }
-      // Only want to send the message notification to comms if comms
-      // is not the one who declared the incident.
-      if (submission.comms && submission.comms !== user.id) {
-        const commsPromise = sendDirectMessage(channelID, submission.comms, 'communications');
-        promiseList.push(commsPromise);
-      }
-      return Promise.all(promiseList);
+      return `Creating the incident channel failed: ${body.error}`;
     })
     .then((responses) => {
       console.log(responses);
