@@ -2,7 +2,7 @@
   "name": "y",
   "version": "1.0.0",
   "description": "Incident Response Tools",
-  "main": "incidentSlackBot.js",
+  "main": "./src/main.js",
   "scripts": {
     "test": "test"
   },

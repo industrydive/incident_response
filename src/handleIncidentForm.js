@@ -1,59 +1,9 @@
-const axios = require('axios');
-const qs = require('querystring');
-
-const API_URL = 'https://www.slack.com/api';
-
-/* * * * * * * * * * * * * * * * * */
-/*         HELPER FUNCTIONS        */
-/* * * * * * * * * * * * * * * * * */
-
-/**
- * Verify that the webhook request came from Slack.
- *
- * @param {object} body The body of the request.
- */
-function verifyWebhook(body) {
-  if (!body || body.token !== process.env.SLACK_TOKEN) {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
-    throw error;
-  }
-}
-
-/**
- * Send a response to slack.
- *
- * @param {string} responseURL The url to send response to.
- * @param {object} message The payload that we are sending to the url.
- */
-function sendMessageToSlack(responseURL, message) {
-  const postOptions = {
-    url: responseURL,
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/x-www-form-urlencoded',
-    },
-    data: qs.stringify(message),
-  };
-  return axios(postOptions);
-}
-
-/**
- * Get the current date for use in the new channel name
- */
-function getCurrentDate() {
-  const dateObject = new Date();
-  // adjust 0 before single digit date
-  const day = `0${dateObject.getDate()}`.slice(-2);
-
-  // current month
-  const month = `0${dateObject.getMonth() + 1}`.slice(-2);
-
-  // current year
-  const year = dateObject.getFullYear();
-
-  return `${year}-${month}-${day}`;
-}
+const {
+  verifyWebhook,
+  sendMessageToSlack,
+  getCurrentDate,
+  API_URL,
+} = require('./slackHelperMethods');
 
 /**
  * This function sends private messages to the user specified
@@ -180,23 +130,18 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
  * We are doing this by getting all the members of the 'Engineering Team' Slack Group.
  */
 function getIncidentChannelMembers(commander, comms) {
-  const responseURL = `${API_URL}/usergroups.list`;
+  const responseURL = `${API_URL}/usergroups.users.list`;
   const requestMembersBody = {
     token: process.env.INCIDENT_BOT_TOKEN,
+    usergroup: process.env.INCIDENT_GROUP_ID,
     include_disabled: false,
-    include_users: true,
   };
   return sendMessageToSlack(responseURL, requestMembersBody)
     .then((response) => {
       let channelMembers = [];
       const responseBody = response.data;
       if (responseBody.ok) {
-        // eslint-disable-next-line consistent-return
-        responseBody.usergroups.forEach((group) => {
-          if (group.name === process.env.INCIDENT_GROUP_NAME) {
-            channelMembers = group.users;
-          }
-        });
+        channelMembers = responseBody.users;
       } else {
         console.log('Formatting list of users for channel creation failed.');
       }
@@ -289,69 +234,8 @@ function setChannelTopic(channelID, commander, comms) {
 
 
 /* * * * * * * * * * * * * * * * * */
-/*        CLOUD FUNCTIONS          */
+/*         CLOUD FUNCTION          */
 /* * * * * * * * * * * * * * * * * */
-
-/**
- * Handle the incoming slash command. In this case the command is '/incident'.
- *
- * @param {object} req the request object.
- * @param {object} res the response object.
- */
-exports.incidentSlashCommand = (req, res) => {
-  res.status(200).send(); // best practice to respond with empty 200 status code
-  const reqBody = req.body;
-  const responseURL = `${API_URL}/dialog.open`;
-  verifyWebhook(reqBody); // Make sure that the request is coming from Slack
-
-  const dialog = {
-    token: process.env.INCIDENT_BOT_TOKEN,
-    trigger_id: reqBody.trigger_id,
-    dialog: JSON.stringify({
-      title: 'Create an Incident',
-      callback_id: 'submit-incident',
-      submit_label: 'Create',
-      elements: [
-        {
-          label: 'Incident Title',
-          type: 'text',
-          name: 'title',
-          placeholder: 'Enter a title for this incident',
-        },
-        {
-          label: 'Description',
-          type: 'textarea',
-          name: 'description',
-          optional: true,
-        },
-        {
-          label: 'Incident Commander',
-          name: 'commander',
-          type: 'select',
-          value: reqBody.user_id,
-          data_source: 'users',
-        },
-        {
-          label: 'Incident Communications',
-          name: 'comms',
-          type: 'select',
-          optional: true,
-          data_source: 'users',
-        },
-      ],
-    }),
-  };
-  // Create a dialog with the user that executed the slash command
-  sendMessageToSlack(responseURL, dialog)
-    .then((response) => {
-      const responseBody = response.data;
-      if (responseBody.error) {
-        console.error(responseBody.error);
-      } else {
-        console.log(responseBody);
-      }
-    });
-};
 
 /**
  * Handle the response from the form submission.
