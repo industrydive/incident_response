@@ -32,21 +32,17 @@ Below is a step by step series of examples that tell you how to get a developmen
     * You can follow the instructions [here](https://cloud.google.com/resource-manager/docs/creating-managing-projects) to set up a Google Cloud project if you do not already have one.
     * In the Google Cloud Console navigate to APIs & Services -> Dashboard and enable the Cloud Functions API if you haven't already done so.
 
-2. You must clone this repo.
+2. Clone this repo.
 
 3. Create your Slack app:
    * Navigate to https://api.slack.com/apps and create your new Slack app.
    * In your new app, navigate to `Slash Commands` and create a new Slash Command. You may call this whatever you like. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `incidentSlashCommand` function once you have completed step 4.
    * In your new app, navigate to and enable `Interactive Components`. Place `https://placeholder.com` in the Request URL section for now. Remember where this is because you will have to replace this with the HTTP trigger endpoint for the `handleIncidentForm` function once you have completed step 4.
    * In your new app, navigate to `Bots` and add a new bot user. You may call it whatever you would like.
-   * Navigate to `OAuth & Permission -> Scopes` and add the `channels:write` and the `chat:write:bot` permissions.
+   * Navigate to `OAuth & Permission -> Scopes` and under the Bot Token scopes, add the `channels:manage`, `chat:write`, `im:write`, and `usergroups:read` permissions.
 
 4. You must set your environment variables and deploy your Cloud Functions. 
     * Rename `example.env.yaml` to `.env.yaml` and input your environment variables.
-
-      NOTE: For us, the three users that are always added to the incident channel upon creation are the members of our product
-      team. You can follow this [link](https://help.workast.com/hc/en-us/articles/360027461274-How-to-find-a-Slack-user-ID) to
-      easily find the user IDs for the members of your team that you would like to include.
 
     * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](#deploying-the-cloud-functions)
 
