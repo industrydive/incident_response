@@ -43,6 +43,8 @@ Below is a step by step series of examples that tell you how to get a developmen
 
 4. You must set your environment variables and deploy your Cloud Functions. 
     * Rename `example.env.yaml` to `.env.yaml` and input your environment variables.
+    
+      NOTE: When the incident channel gets created, it invites all of the members of the usergroup that is specified in the env.yml file. For more info on usergroups and how to manage them see the [following](https://slack.com/help/articles/212906697-Create-a-user-group) and the example.env.yml file that is included in this repo.
 
     * Now you can deploy each of your cloud functions by following the instructions in the [deployment section](#deploying-the-cloud-functions)
 
