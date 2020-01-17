@@ -260,9 +260,9 @@ exports.handleIncidentForm = (req, res) => {
         const channelInfo = body.channel;
         channelID = channelInfo.id;
         channelName = channelInfo.name;
-        const setTopicPromise = setChannelTopic(channelID, submission.commander, submission.comms);
         const inviteUsersPromise = inviteUsersToChannel(channelID, submission.commander, submission.comms);
-        const promiseList = [setTopicPromise, inviteUsersPromise];
+        const setTopicPromise = setChannelTopic(channelID, submission.commander, submission.comms);
+        const promiseList = [inviteUsersPromise, setTopicPromise];
         // Only want to send message notification if the commander
         // is not the one who declared the incident
         if (submission.commander !== user.id) {
