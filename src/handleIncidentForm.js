@@ -46,7 +46,6 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        // tslint:disable-next-line:max-line-length
         text: `*[${channelName}] An Incident has been opened by <@${payload.user.id}>*`,
       },
     },
@@ -88,7 +87,6 @@ function sendIncidentDetailsMessage(payload, channelName, channelID) {
       fields: [
         {
           type: 'mrkdwn',
-          // tslint:disable-next-line:max-line-length
           text: `*Incident started*\n<!date^${Math.round(Date.now() / 1000)}^{date_short} at {time_secs}|${Math.round(Date.now() / 1000)}>`,
         },
       ],
@@ -277,7 +275,7 @@ exports.handleIncidentForm = (req, res) => {
         }
         return Promise.all(promiseList);
       }
-      return `Creating the incident channel failed: ${body.error}`;
+      return Promise.reject(body.error);
     })
     .then((responses) => {
       console.log(responses);
