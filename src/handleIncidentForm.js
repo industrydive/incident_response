@@ -215,6 +215,7 @@ function setChannelTopic(channelID, commander, comms) {
     topic += ` Comms: <@${comms}>`;
   }
   topic += ` Incident Doc: ${process.env.INCIDENT_DOC_URL}`;
+  topic += ` RunBook: ${process.env.RUNBOOK_URL}`;
   const channelTopicBody = {
     token: process.env.INCIDENT_BOT_TOKEN,
     channel: channelID,
